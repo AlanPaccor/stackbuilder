@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import AceEditor from 'react-ace';
+import 'ace-builds/webpack-resolver';
 
+// Import Ace editor modes and themes
 import 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/mode-css';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-github';
-
-import 'ace-builds/src-noconflict/worker-html';
-import 'ace-builds/src-noconflict/worker-css';
-import 'ace-builds/src-noconflict/worker-javascript';
 
 function Codedisplay() {
   const [htmlCode, setHtmlCode] = useState('');
@@ -41,6 +39,21 @@ function Codedisplay() {
   const saveCode = () => {
     console.log('Code saved!');
   };
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+        event.preventDefault();
+        saveCode();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   return (
     <div className="codeBody">
@@ -95,7 +108,7 @@ function Codedisplay() {
       </div>
 
       <div className="editorContainer">
-        <h3>JavaScript</h3> {/* Corrected closing tag */}
+        <h3>JavaScript</h3>
         <AceEditor
           mode="javascript"
           theme="github"
